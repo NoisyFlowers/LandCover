@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="datapolicy">
+        <![CDATA[
+
+<h2>LandPKS Data Policy</h2>
+<p>LandPKS is a global project by the U.S. Department of Agriculture\'s Agricultural Research Service at the Jornada encouraging volunteer participation in the collection, measurement and reporting of matters of concern to them. Our mission is to provide comprehensive support for community-based land assessment and monitoring efforts worldwide. The data gathered by LandPKS participants is freely available to governments, academic institutions and the private sector as well as participants and the general public for the purposes of promoting learning, enhancing scientific knowledge, and promoting sustainable land management. LandPKS data are made available to the public via the web site (<a href="http://www.landpotential.org">www.landpotential.org</a>). In addition, we ask that everyone who uses LandPKS data to please acknowledge its source when displaying it. Unless otherwise noted, all LandPKS content and data are released under a Creative Commons Attribution International 4.0 License.</p> 
+<p>All data available through LandPKS websites and mobile applications are in the public domain, and are not restricted by copyright. Users are strongly encouraged to contact the LandPKS data providers to ensure sound scientific data interpretation in the context of the historical results and any in situ experience with these data.</p>
+
+<p>We request any publications utilizing data from LandPKS sources to include formal acknowledgement of the data provider. The formal acknowledgement includes:<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;- The statement: \"Datasets were provided by the USDA\s Land-Potential Knowledge System\"<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;- Citation to the following publication to document LandPKS technologies and data systems:<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<u>Herrick, J.E.</u> et al., 2013. <u>The Global Land-Potential Knowledge System (LandPKS): Supporting evidence-based, site-specific land use and management through cloud computing, mobile applications, and crowdsourcing.</u> <i>Journal of Soil and Water Conservation</i>, 68(1). Available at: <a href=\"http://www.jswconline.org/content/68/1/5A.full.pdf+html\">http://www.jswconline.org/content/68/1/5A.full.pdf+html.</a></p>
+
+<p>Please send an electronic copy of all published reports and manuscripts to: <a href=\"mailto:landpotential@gmail.com\">landpotential@gmail.com</a></p>
+
+<p><u>Disclaimer</u><br>
+LandPKS data are provided \"as is\", and in no event shall the providers be liable for any damage or loss due to missing data or mis-interpretation of its content.</p>
+
+   
+    	]]>
+    </string>
+    
+</resources>

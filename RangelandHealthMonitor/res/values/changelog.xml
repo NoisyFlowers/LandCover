@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+	<string name="changelog">
+		<![CDATA[
+		<p><b>V1.1.1 (2015-06-24)</b><br>
+		Added some account permissions to accommodate some devices.<br><br>
+		</p>
+
+		<p><b>V1.1.0 (2015-06-12)</b><br>
+		Height/Gap/Species screen now optional.<br><br>
+		\"N/A\" presented on Summary screen for observation sets with missing Height/Gap/Species data.<br><br>
+		New values for Cover categories.<br><br>
+		Dominant and Nondominant species entry on SiteDetail screen.  The values are then used on the Height/Gap/Species screen for species counts.<br><br>
+		Removed species name entry from Height/Gap/Species screen.<br><br>
+		Moved credentials to a string resource file for exclusion from public repositories.<br><br>
+		</p>
+
+		<p><b>V1.0.1 (2015-04-12)</b><br>
+		Corrected LandInfo name in Plot List Help text.<br>
+		Initial public release</p>
+
+		<p><b>V1.0.0 (2015-04-10)</b><br>
+		Release Candidate.</p>
+    	]]>
+    </string>
+    
+</resources>
