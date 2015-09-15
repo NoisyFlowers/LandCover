@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.noisyflowers.rangelandhealthmonitor.android.R;
 import com.noisyflowers.rangelandhealthmonitor.android.RHMApplication;
 import com.noisyflowers.rangelandhealthmonitor.android.activities.SegmentActivity;
+import com.noisyflowers.rangelandhealthmonitor.android.activities.SiteDetailActivity;
 import com.noisyflowers.rangelandhealthmonitor.android.activities.TransectActivity;
 import com.noisyflowers.rangelandhealthmonitor.android.model.Segment;
 import com.noisyflowers.rangelandhealthmonitor.android.util.IHelp;
@@ -99,6 +100,7 @@ public class TransectFragment extends Fragment implements IHelp, PersistenceFrag
 	    		//detailIntent.putExtra(SegmentActivity.TRANSECT_ID, ((TransectActivity)getActivity()).transectID); 
 	    		detailIntent.putExtra(SegmentActivity.TRANSECT_ID, ((TransectActivity)getActivity()).transect.ID); 
 	    		detailIntent.putExtra(SegmentActivity.SITE_NAME, ((TransectActivity)getActivity()).siteName); 
+	    		detailIntent.putExtra(SegmentActivity.SITE_ID, ((TransectActivity)getActivity()).siteID); 
 	    		detailIntent.putExtra(SegmentActivity.DATE, ((TransectActivity)getActivity()).date); 
 	    		detailIntent.putExtra(SegmentActivity.TRANSECT_DIRECTION, ((TransectActivity)getActivity()).transectDirection.name()); 
 	    		startActivity(detailIntent);

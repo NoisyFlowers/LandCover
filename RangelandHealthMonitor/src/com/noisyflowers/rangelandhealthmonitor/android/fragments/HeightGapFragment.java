@@ -28,11 +28,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +49,7 @@ import android.widget.TextView;
 import com.noisyflowers.rangelandhealthmonitor.android.R;
 import com.noisyflowers.rangelandhealthmonitor.android.RHMApplication;
 import com.noisyflowers.rangelandhealthmonitor.android.activities.SegmentActivity;
+import com.noisyflowers.rangelandhealthmonitor.android.activities.SiteDetailActivity;
 import com.noisyflowers.rangelandhealthmonitor.android.model.Segment;
 import com.noisyflowers.rangelandhealthmonitor.android.model.Transect;
 import com.noisyflowers.rangelandhealthmonitor.android.util.IHelp;
@@ -55,21 +60,29 @@ import com.noisyflowers.rangelandhealthmonitor.android.util.PersistenceFragment;
 
 public class HeightGapFragment extends Fragment implements IHelp, PersistenceFragment, OnClickListener {
 		
+	Transect transect;
+	
 	private RadioGroup heightRG1, heightRG2, basalGapRG, canopyGapRG;
 	private Button submitSpecies;
-	private TextView speciesListTV, woodySpeciesTV, nonwoodySpeciesTV;
+	private TextView speciesListTV;
+	AutoCompleteTextView speciesOfInterest1TV, speciesOfInterest2TV;
 	private AutoCompleteTextView speciesNameTV;
-	private EditText woodySpeciesCountET1, nonwoodySpeciesCountET2;
+	private EditText speciesOfInterest1CountET, speciesOfInterest2CountET;
 	ViewGroup speciesViewGroup;
 	
 	private ArrayList<String> heightChoices = new ArrayList<String>();
 	private List<String> speciesList = new ArrayList<String>();
 
+	//private String emptyWoodyLabelStr, emptyNonwoodyLabelStr;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_height_gap, container, false);
     
+        //emptyWoodyLabelStr = getString(R.string.fragment_heightGapSpecies_species1Label);
+        //emptyNonwoodyLabelStr = getString(R.string.fragment_heightGapSpecies_species1Label);
+        
         heightRG1 = (RadioGroup) view.findViewById(R.id.fragment_heightGapSpecies_heightRG01);
         heightRG2 = (RadioGroup) view.findViewById(R.id.fragment_heightGapSpecies_heightRG02);
 		heightRG1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
@@ -82,24 +95,83 @@ public class HeightGapFragment extends Fragment implements IHelp, PersistenceFra
 		
 		speciesViewGroup = 	(ViewGroup)view.findViewById(R.id.fragment_heightGapSpecies_speciesCountArea);
 
-		woodySpeciesCountET1 = (EditText) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityET_1);
-		nonwoodySpeciesCountET2 = (EditText) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityET_2);
+		speciesOfInterest1CountET = (EditText) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityET_1);
+		speciesOfInterest2CountET = (EditText) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityET_2);
 
-		woodySpeciesTV = (TextView) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityTV_1);
-		nonwoodySpeciesTV = (TextView) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityTV_2);
-		Transect transect = ((SegmentActivity)getActivity()).transect;
+		speciesOfInterest1TV = (AutoCompleteTextView) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityTV_1);
+		speciesOfInterest2TV = (AutoCompleteTextView) view.findViewById(R.id.fragment_heightGapSpecies_speciesDensityTV_2);
+		transect = ((SegmentActivity)getActivity()).transect;
 		if (transect != null) {
-			if (transect.dominantWoodySpecies != null && !"".equals(transect.dominantWoodySpecies.toString())) {
-				view.findViewById(R.id.fragment_heightGapSpecies_speciesNotEnteredTV).setVisibility(View.GONE);
-				speciesViewGroup.setVisibility(View.VISIBLE);
-				woodySpeciesTV.setText(transect.dominantWoodySpecies);
-				woodySpeciesCountET1.addTextChangedListener(new MinMaxTextWatcher(0, 999));
+			speciesOfInterest1CountET.addTextChangedListener(new MinMaxTextWatcher(0, 999));
+			speciesOfInterest2CountET.addTextChangedListener(new MinMaxTextWatcher(0, 999));
+			String species = null;
+			if (transect.speciesOfInterest1 != null && !"".equals(transect.speciesOfInterest1.toString())) {
+				speciesOfInterest1TV.setText(transect.speciesOfInterest1);
+				speciesOfInterest1TV.setEnabled(false);
+			} else {
+		        List<String> speciesList = RHMApplication.getInstance().getDatabaseAdapter().getFullSpeciesList();
+				ArrayAdapter<String> speciesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, speciesList);
+				speciesOfInterest1TV.setAdapter(speciesAdapter);
+				speciesOfInterest1TV.addTextChangedListener(new TextWatcher() {
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start,
+							int count, int after) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start,
+							int before, int count) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void afterTextChanged(Editable s) {
+		            	if (!"".equals(speciesOfInterest1TV.getText().toString())) { 
+		            		transect.speciesOfInterest1 = s.toString();
+		            		speciesOfInterest1CountET.setEnabled(true);
+		            	}
+					}
+					
+				});
+				speciesOfInterest1CountET.setEnabled(false);
 			}
-			if (transect.dominantNonwoodySpecies != null && !"".equals(transect.dominantNonwoodySpecies.toString())) {
-				view.findViewById(R.id.fragment_heightGapSpecies_speciesNotEnteredTV).setVisibility(View.GONE);
-				speciesViewGroup.setVisibility(View.VISIBLE);
-				nonwoodySpeciesTV.setText(transect.dominantNonwoodySpecies);
-				nonwoodySpeciesCountET2.addTextChangedListener(new MinMaxTextWatcher(0, 999));
+			if (transect.speciesOfInterest2 != null && !"".equals(transect.speciesOfInterest2.toString())) {
+				speciesOfInterest2TV.setText(transect.speciesOfInterest2);
+				speciesOfInterest2TV.setEnabled(false);
+			} else {
+		        List<String> speciesList = RHMApplication.getInstance().getDatabaseAdapter().getFullSpeciesList();
+				ArrayAdapter<String> speciesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, speciesList);
+				speciesOfInterest2TV.setAdapter(speciesAdapter);
+				speciesOfInterest2TV.addTextChangedListener(new TextWatcher() {
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start,
+							int count, int after) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start,
+							int before, int count) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void afterTextChanged(Editable s) {
+		            	if (!"".equals(speciesOfInterest2TV.getText().toString())) {
+		            		transect.speciesOfInterest2 = s.toString();
+		            		speciesOfInterest2CountET.setEnabled(true);
+		            	}
+					}
+					
+				});
+				speciesOfInterest2CountET.setEnabled(false);
 			}
 		}
 
@@ -132,6 +204,18 @@ public class HeightGapFragment extends Fragment implements IHelp, PersistenceFra
 		super.onPause();
 		heightRG1.setOnCheckedChangeListener(null);
 		heightRG2.setOnCheckedChangeListener(null);			
+		//RHMApplication.getInstance().getDatabaseAdapter().upsertTransect(transect);
+		if (((SegmentActivity)getActivity()).siteID != null && ((SegmentActivity)getActivity()).date == null) { //date null indicates new obs set, not null means user is viewing old data
+			for (Transect.Direction direction : Transect.Direction.values()) { 
+			    Transect t = RHMApplication.getInstance().getDatabaseAdapter().getTransect(((SegmentActivity)getActivity()).siteID, direction);
+			    if (!"".equals(transect.speciesOfInterest1) || "".equals(transect.speciesOfInterest2)) {
+			    	t.speciesOfInterest1 = transect.speciesOfInterest1;
+			    	t.speciesOfInterest2 = transect.speciesOfInterest2;
+			    	RHMApplication.getInstance().getDatabaseAdapter().upsertTransect(t);
+			    }
+			}
+		}
+
 	}
 
 	@Override
@@ -214,11 +298,11 @@ public class HeightGapFragment extends Fragment implements IHelp, PersistenceFra
 		}
 		if (rB != null) rB.setChecked(true);
 
-		woodySpeciesCountET1.setText(segment.woodySpeciesCount == null ? null : ""+segment.woodySpeciesCount); //necessary to clarify signature
-		nonwoodySpeciesCountET2.setText(segment.nonwoodySpeciesCount == null ? null : ""+segment.nonwoodySpeciesCount);
+		speciesOfInterest1CountET.setText(segment.speciesOfInterest1Count == null ? null : ""+segment.speciesOfInterest1Count); //necessary to clarify signature
+		speciesOfInterest2CountET.setText(segment.speciesOfInterest2Count == null ? null : ""+segment.speciesOfInterest2Count);
 		
-		//This is to display counts for transect data that predates woody/nonwoody (1.1)
-		if (segment.woodySpeciesCount != null || segment.nonwoodySpeciesCount != null) {
+		//This is to display counts for transect data that predates species overhaul (1.1)
+		if (segment.speciesOfInterest1Count != null || segment.speciesOfInterest2Count != null) {
 			speciesViewGroup.setVisibility(View.VISIBLE);			
 		}
 		
@@ -255,8 +339,8 @@ public class HeightGapFragment extends Fragment implements IHelp, PersistenceFra
 		id = canopyGapRG.getCheckedRadioButtonId();
 		segment.canopyGap = id == -1 ? null : id == R.id.fragment_heightGapSpecies_canopyGapRG_yesRB;
 		
-		try {segment.woodySpeciesCount = Integer.parseInt(woodySpeciesCountET1.getText().toString());} catch(Exception eX) {segment.woodySpeciesCount = null;}
-		try {segment.nonwoodySpeciesCount = Integer.parseInt(nonwoodySpeciesCountET2.getText().toString());} catch(Exception eX) {segment.nonwoodySpeciesCount = null;}
+		try {segment.speciesOfInterest1Count = Integer.parseInt(speciesOfInterest1CountET.getText().toString());} catch(Exception eX) {segment.speciesOfInterest1Count = null;}
+		try {segment.speciesOfInterest2Count = Integer.parseInt(speciesOfInterest2CountET.getText().toString());} catch(Exception eX) {segment.speciesOfInterest2Count = null;}
 				
 		segment.speciesList = speciesList;
 		
@@ -272,8 +356,8 @@ public class HeightGapFragment extends Fragment implements IHelp, PersistenceFra
 		retVal = retVal && segment.basalGap != null;
 		retVal = retVal && segment.canopyGap != null;
 		
-		retVal = retVal && segment.woodySpeciesCount != null;
-		retVal = retVal && segment.nonwoodySpeciesCount != null;
+		retVal = retVal && segment.speciesOfInterest1Count != null;
+		retVal = retVal && segment.speciesOfInterest2Count != null;
 		
 		return retVal;
 	}

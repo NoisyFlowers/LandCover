@@ -41,8 +41,8 @@
    	<string name="fragment_site_detail_status_direction_2_button">E</string>
    	<string name="fragment_site_detail_status_direction_3_button">S</string>
    	<string name="fragment_site_detail_status_direction_4_button">W</string>
-   	<string name="fragment_site_detail_dominant_woody_species">Dominant woody species</string>
-   	<string name="fragment_site_detail_dominant_nonwoody_species">Dominant nonwoody species</string>
+   	<string name="fragment_site_detail_dominant_woody_species">Dominant woody species (by cover)</string>
+   	<string name="fragment_site_detail_dominant_nonwoody_species">Dominant nonwoody species (by cover)</string>
    		   									
    	<string name="fragment_transect_direction_1">North</string>
    	<string name="fragment_transect_direction_2">East</string>
@@ -99,10 +99,11 @@
    	<string name="fragment_heightGapSpecies_speciesLabel">Species counts</string>
    	<string name="fragment_heightGapSpecies_speciesList_dummy">&lt;add species below&gt;</string>
    	<string name="fragment_heightGapSpecies_speciesList_addSpecies">Add species name</string>
-   	<string name="fragment_heightGapSpecies_species1Label">Species 1</string>
-   	<string name="fragment_heightGapSpecies_species2Label">Species 2</string>
+   	<string name="fragment_heightGapSpecies_species1Label">&lt;enter species&gt;</string>
+   	<string name="fragment_heightGapSpecies_species2Label">&lt;enter species&gt;</string>
    	<string name="fragment_heightGapSpecies_speciesNotEntered">Species names not entered</string>
-   	
+   	<string name="fragment_heightGapSpecies_count">Count:</string>
+   		
    	<string name="fragment_site_summary_site_summary_label">Site Summary</string>
    	<string name="fragment_site_summary_landcover_label">Cover</string>
    	<string name="fragment_site_summary_landcover_bare_label">Bare ground</string>

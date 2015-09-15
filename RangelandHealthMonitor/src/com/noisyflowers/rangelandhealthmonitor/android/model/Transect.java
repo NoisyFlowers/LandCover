@@ -50,6 +50,8 @@ public class Transect {
 	public boolean needsUpload;
 	public String dominantWoodySpecies;
 	public String dominantNonwoodySpecies;
+	public String speciesOfInterest1;
+	public String speciesOfInterest2;
 	
 	public List<Segment> segments = new ArrayList<Segment>();  //TODO: testing this for sync
 	

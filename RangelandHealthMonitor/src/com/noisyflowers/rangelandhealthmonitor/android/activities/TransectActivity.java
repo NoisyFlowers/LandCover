@@ -55,7 +55,7 @@ public class TransectActivity extends ActionBarActivity {
 	
 	//public String transectDirection = null;
 	public Transect.Direction transectDirection = null;
-	private String siteID = null;
+	public String siteID = null;
 	public String siteName = null;
 	public String date = null;
 			

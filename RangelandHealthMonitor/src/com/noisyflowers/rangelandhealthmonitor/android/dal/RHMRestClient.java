@@ -204,6 +204,8 @@ public class RHMRestClient {
 					transect.direction = Transect.Direction.valueOf(remoteTransect.getDirection());
 					transect.dominantWoodySpecies = remoteTransect.getDominantWoodySpecies();
 					transect.dominantNonwoodySpecies = remoteTransect.getDominantNonwoodySpecies();
+					transect.speciesOfInterest1 = remoteTransect.getSpeciesOfInterest1() != null ? remoteTransect.getSpeciesOfInterest1() : remoteTransect.getDominantWoodySpecies();
+					transect.speciesOfInterest2 = remoteTransect.getSpeciesOfInterest2() != null ? remoteTransect.getSpeciesOfInterest2() : remoteTransect.getDominantNonwoodySpecies();
 					
 					Long siteID = siteIDMap.get(remoteTransect.getSiteID());
 					if (siteID == null) {
@@ -219,8 +221,8 @@ public class RHMRestClient {
 						segment.canopyHeight = Segment.Height.serverNameLookup.get(remoteSegment.getCanopyHeight());
 						try { segment.date = sdf.parse(remoteSegment.getDate()); } catch (Exception eX) {continue;} // if date is bad from server, something is really wrong.  Ignore this transect.
 						segment.range = Segment.Range.serverNameLookup.get(remoteSegment.getRange());
-						segment.woodySpeciesCount = remoteSegment.getSpecies1Density();
-						segment.nonwoodySpeciesCount = remoteSegment.getSpecies2Density();
+						segment.speciesOfInterest1Count = remoteSegment.getSpeciesOfInterest1Count();
+						segment.speciesOfInterest2Count = remoteSegment.getSpeciesOfInterest2Count();
 						segment.speciesList = remoteSegment.getSpeciesList();
 						for (int stickSegmentIndex = 0; stickSegmentIndex < Segment.STICK_SEGMENT_COUNT; stickSegmentIndex++) {
 							StickSegment stickSegment = new StickSegment(stickSegmentIndex);
@@ -251,6 +253,8 @@ public class RHMRestClient {
     	remoteTransect.setDirection(transect.direction.name());
     	remoteTransect.setDominantWoodySpecies(transect.dominantWoodySpecies);
     	remoteTransect.setDominantNonwoodySpecies(transect.dominantNonwoodySpecies);
+    	remoteTransect.setSpeciesOfInterest1(transect.speciesOfInterest1);
+    	remoteTransect.setSpeciesOfInterest2(transect.speciesOfInterest2);
    	
 		String URL = LandPKSContract.CONTENT_URI + "/" + LandPKSContract.SITES_PATH + "/" + transect.siteID;  
         Uri uri = Uri.parse(URL);
@@ -282,8 +286,8 @@ public class RHMRestClient {
 			remoteSegment.setCanopyHeight(s.canopyHeight == null ? null : s.canopyHeight.getServerName());
 			remoteSegment.setBasalGap(s.basalGap);
 			remoteSegment.setCanopyGap(s.canopyGap);
-			remoteSegment.setSpecies1Density(s.woodySpeciesCount);
-			remoteSegment.setSpecies2Density(s.nonwoodySpeciesCount);
+			remoteSegment.setSpeciesOfInterest1Count(s.speciesOfInterest1Count);
+			remoteSegment.setSpeciesOfInterest2Count(s.speciesOfInterest2Count);
 			remoteSegment.setSpeciesList(s.speciesList);
 			remoteSegment.setRange(s.range.getServerName());
 			List<com.noisyflowers.landpks.server.gae.model.transectendpoint.model.StickSegment> remoteStickSegments = new ArrayList<com.noisyflowers.landpks.server.gae.model.transectendpoint.model.StickSegment>();

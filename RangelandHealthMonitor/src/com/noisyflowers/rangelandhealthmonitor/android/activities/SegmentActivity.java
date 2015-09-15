@@ -62,11 +62,13 @@ public class SegmentActivity extends ActionBarActivity {
 	public static final String SEGMENT_INDEX = "segmentIndex";
 	public static final String TRANSECT_ID = "transectID";
 	public static final String SITE_NAME = "siteName";
+	public static final String SITE_ID = "siteID";
 	public static final String DATE = "date";
 	public static final String TRANSECT_DIRECTION = "transectDirection";
 	private int segmentIndex;
 	private long transectID;
 	private String segmentName;
+	public String siteID = null;
 	private String siteName;
 	public String date;
 	//private String transectName;
@@ -133,6 +135,7 @@ public class SegmentActivity extends ActionBarActivity {
 	    segmentIndex = intent.getIntExtra(SEGMENT_INDEX, 0);
 	    transectID = intent.getLongExtra(TRANSECT_ID, -1); //TODO: better default (possibly change to string?
 	    siteName = intent.getStringExtra(SITE_NAME); 
+	    siteID = intent.getStringExtra(SITE_ID);
 	    date = intent.getStringExtra(DATE); 
 	    //transectName = intent.getStringExtra(TRANSECT_DIRECTION); 
 	    transectDirection = Transect.Direction.valueOf(intent.getStringExtra(TRANSECT_DIRECTION)); 

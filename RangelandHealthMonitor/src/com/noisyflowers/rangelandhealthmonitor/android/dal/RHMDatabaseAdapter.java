@@ -30,8 +30,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.noisyflowers.rangelandhealthmonitor.android.R;
 import com.noisyflowers.rangelandhealthmonitor.android.RHMApplication;
@@ -58,7 +61,7 @@ public class RHMDatabaseAdapter {
 	private static final String TAG = RHMDatabaseAdapter.class.getName(); 
 	
 	private static final String DB_NAME = "RHM.db";
-	private static final int DB_VERSION = 8;
+	private static final int DB_VERSION = 9;
 
 	//public static final String SITES_TABLE = "sites";
 	public static final String TRANSECTS_TABLE = "transects";
@@ -88,6 +91,8 @@ public class RHMDatabaseAdapter {
 			//"unique(site_id, direction) on conflict ignore" +
 			"dominant_woody_species text, " +
 			"dominant_nonwoody_species text, " +
+			"species_of_interest_1 text, " +
+			"species_of_interest_2 text, " +
 			"unique(site_id, direction) on conflict fail" +
 		 ")";
 
@@ -98,8 +103,10 @@ public class RHMDatabaseAdapter {
 			"canopy_height text, " + //TODO: text for now, might want to use category index or something 
 			"basal_gap integer, " + //boolean
 			"canopy_gap integer, " + //boolean
-			"woody_species_count integer, " +
-			"nonwoody_species_count integer, " +
+			//"woody_species_count integer, " +
+			//"nonwoody_species_count integer, " +
+			"species_of_interest_1_count integer, " +
+			"species_of_interest_2_count integer, " +
 			"needs_upload integer default 0, " + //boolean
 			"uploaded integer default 0, " + //boolean
 			"date datetime" +
@@ -194,6 +201,8 @@ public class RHMDatabaseAdapter {
 		retVal.needsUpload = resultSet.getLong(resultSet.getColumnIndex("needs_upload")) == 1;
 		retVal.dominantWoodySpecies = resultSet.getString(resultSet.getColumnIndex("dominant_woody_species"));
 		retVal.dominantNonwoodySpecies = resultSet.getString(resultSet.getColumnIndex("dominant_nonwoody_species"));
+		retVal.speciesOfInterest1 = resultSet.getString(resultSet.getColumnIndex("species_of_interest_1"));
+		retVal.speciesOfInterest2 = resultSet.getString(resultSet.getColumnIndex("species_of_interest_2"));
 		return retVal;
 	}
 	
@@ -277,8 +286,8 @@ public class RHMDatabaseAdapter {
 				segment.canopyHeight = resultSet.isNull((resultSet.getColumnIndex("canopy_height"))) ? null : Segment.Height.valueOf(resultSet.getString(resultSet.getColumnIndex("canopy_height")));
 				segment.basalGap = resultSet.isNull((resultSet.getColumnIndex("basal_gap"))) ? null : resultSet.getInt(resultSet.getColumnIndex("basal_gap")) == 1;
 				segment.canopyGap = resultSet.isNull((resultSet.getColumnIndex("canopy_gap"))) ? null : resultSet.getInt(resultSet.getColumnIndex("canopy_gap")) == 1;
-				segment.woodySpeciesCount = resultSet.isNull((resultSet.getColumnIndex("woody_species_count"))) ? null : resultSet.getInt(resultSet.getColumnIndex("woody_species_count"));
-				segment.nonwoodySpeciesCount = resultSet.isNull((resultSet.getColumnIndex("nonwoody_species_count"))) ? null : resultSet.getInt(resultSet.getColumnIndex("nonwoody_species_count"));				
+				segment.speciesOfInterest1Count = resultSet.isNull((resultSet.getColumnIndex("species_of_interest_1_count"))) ? null : resultSet.getInt(resultSet.getColumnIndex("species_of_interest_1_count"));
+				segment.speciesOfInterest2Count = resultSet.isNull((resultSet.getColumnIndex("species_of_interest_2_count"))) ? null : resultSet.getInt(resultSet.getColumnIndex("species_of_interest_2_count"));				
 				segment.date = date;
 				segment.needsUpload = resultSet.getLong(resultSet.getColumnIndex("needs_upload")) == 1;
 				segment.uploaded = resultSet.getLong(resultSet.getColumnIndex("uploaded")) == 1;
@@ -327,6 +336,39 @@ public class RHMDatabaseAdapter {
 		return segment;
 	}
 	
+	//TODO: need general getAllSpeciesList routine
+	public List<String> getFullSpeciesList() {
+		Set<String> speciesSet = new HashSet<String>();
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		try {
+			Cursor resultSet = db.query(true, TRANSECTS_TABLE, new String[] {"dominant_woody_species"}, "dominant_woody_species is not null", null, "dominant_woody_species", null, null, null);
+			while (resultSet.moveToNext()) {
+				speciesSet.add(resultSet.getString(0));
+			}
+			resultSet.close(); //TODO: put in finally?
+			resultSet = db.query(true, TRANSECTS_TABLE, new String[] {"dominant_woody_species"}, "dominant_woody_species is not null", null, "dominant_woody_species", null, null, null);
+			while (resultSet.moveToNext()) {
+				speciesSet.add(resultSet.getString(0));
+			}
+			resultSet.close(); //TODO: put in finally?
+			resultSet = db.query(true, TRANSECTS_TABLE, new String[] {"species_of_interest_1"}, "species_of_interest_1 is not null", null, "species_of_interest_1", null, null, null);
+			while (resultSet.moveToNext()) {
+				speciesSet.add(resultSet.getString(0));
+			}
+			resultSet.close(); //TODO: put in finally?
+			resultSet = db.query(true, TRANSECTS_TABLE, new String[] {"species_of_interest_2"}, "species_of_interest_2 is not null", null, "species_of_interest_2", null, null, null);
+			while (resultSet.moveToNext()) {
+				speciesSet.add(resultSet.getString(0));
+			}
+			resultSet.close(); //TODO: put in finally?
+		} catch (SQLException sEX) {
+			Log.w(TAG, Log.getStackTraceString(sEX));
+		} finally {
+			//db.close();
+		}
+		
+		return new ArrayList<String>(speciesSet);
+	}
 	
 	public List<String> getWoodySpeciesList() {
 		List<String> speciesList = new ArrayList<String>();
@@ -458,8 +500,8 @@ public class RHMDatabaseAdapter {
 	    	values.put("canopy_height", segment.canopyHeight == null ? null : segment.canopyHeight.name());
 	    	values.put("basal_gap", segment.basalGap);
 	    	values.put("canopy_gap", segment.canopyGap);
-	    	values.put("woody_species_count", segment.woodySpeciesCount);
-	    	values.put("nonwoody_species_count", segment.nonwoodySpeciesCount);
+	    	values.put("species_of_interest_1_count", segment.speciesOfInterest1Count);
+	    	values.put("species_of_interest_2_count", segment.speciesOfInterest2Count);
 	    	values.put("date", sdf.format(segment.date));  
 	    	values.put("uploaded", segment.uploaded);	//TODO: for syncing; tentative for other uses
 			String[] qVals = {segment.transectID.toString(), segment.range.name(), sdf.format(segment.date)};
@@ -579,6 +621,8 @@ public class RHMDatabaseAdapter {
 	    	values.put("direction", transect.direction == null ? null : transect.direction.name());
 	    	values.put("dominant_woody_species", transect.dominantWoodySpecies);
 	    	values.put("dominant_nonwoody_species", transect.dominantNonwoodySpecies);
+	    	values.put("species_of_interest_1", transect.speciesOfInterest1);
+	    	values.put("species_of_interest_2", transect.speciesOfInterest2);
 			String[] qVals = {transect.siteID.toString(), transect.direction.name()};
 			int rows = db.update("transects",  values, "site_id = ? and direction = ?", qVals);
 			if (rows == 0) {
@@ -945,6 +989,27 @@ public class RHMDatabaseAdapter {
 						Log.e(TAG, "Upgrade from db7: Unable to rename stick_segments table columns", eX);
 						hosed = true;
 					}
+					
+				case 8:
+					try {
+					    db.execSQL("ALTER TABLE " + TRANSECTS_TABLE + " ADD  COLUMN species_of_interest_1 text");
+					    db.execSQL("ALTER TABLE " + TRANSECTS_TABLE + " ADD  COLUMN species_of_interest_2 text");
+					    //init with dominant values, since that's what users will have previously used
+					    db.execSQL("update " + TRANSECTS_TABLE + " set species_of_interest_1 = dominant_woody_species");
+					    db.execSQL("update " + TRANSECTS_TABLE + " set species_of_interest_2 = dominant_nonwoody_species");
+					} catch (Exception eX) {
+						Log.e(TAG, "Upgrade from db8: Unable to add columns", eX);
+						hosed = true;
+					}
+					try {
+						renameColumns(db, SEGMENTS_TABLE_CREATE, SEGMENTS_TABLE, 
+								  new String[] {"woody_species_count", "nonwoody_species_count"}, 
+								  new String[] {"species_of_interest_1_count", "species_of_interest_2_count"});
+					} catch (Exception eX) {
+						Log.e(TAG, "Upgrade from db8: Unable to rename segments table columns", eX);
+						hosed = true;
+					}
+
 					//let fall through to later versions
 			}
 			

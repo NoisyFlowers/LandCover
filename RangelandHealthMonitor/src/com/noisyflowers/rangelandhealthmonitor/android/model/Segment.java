@@ -136,8 +136,8 @@ public class Segment {
 	public Height canopyHeight;
 	public Boolean basalGap;
 	public Boolean canopyGap;
-	public Integer woodySpeciesCount;
-	public Integer nonwoodySpeciesCount;
+	public Integer speciesOfInterest1Count;
+	public Integer speciesOfInterest2Count;
 	public List<String> speciesList;
 	public Date date;
 	public Boolean needsUpload = false;

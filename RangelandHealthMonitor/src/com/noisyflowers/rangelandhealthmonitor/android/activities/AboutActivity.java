@@ -38,6 +38,7 @@ import com.noisyflowers.rangelandhealthmonitor.android.R;
 import com.noisyflowers.rangelandhealthmonitor.android.RHMApplication;
 import com.noisyflowers.rangelandhealthmonitor.android.util.RHMPagerAdapter;
 
+
 public class AboutActivity extends ActionBarActivity /*implements View.OnLongClickListener */{
 	private static final String TAG = AboutActivity.class.getName(); 
 

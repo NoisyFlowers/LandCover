@@ -59,7 +59,7 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 	
 	private EditText bareGroundET, totalCoverET, foliarCoverET, canopyGapET, basalGapET, species1DensityET, species2DensityET;
 	private LinearLayout bareArea, totalCoverArea, foliarCoverArea, foliarCompositionArea, coverArea, heightArea;
-	private TextView woodySpeciesTV, nonwoodySpeciesTV;
+	private TextView species1TV, species2TV;
 	
 	public SiteSummaryFragment() {
 		
@@ -86,8 +86,8 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 		species1DensityET = (EditText)rootView.findViewById(R.id.fragment_site_summary_species_1);
 		species2DensityET = (EditText)rootView.findViewById(R.id.fragment_site_summary_species_2);
 
-		woodySpeciesTV = (TextView)rootView.findViewById(R.id.fragment_site_summary_species_1_label);
-		nonwoodySpeciesTV = (TextView)rootView.findViewById(R.id.fragment_site_summary_species_2_label);
+		species1TV = (TextView)rootView.findViewById(R.id.fragment_site_summary_species_1_label);
+		species2TV = (TextView)rootView.findViewById(R.id.fragment_site_summary_species_2_label);
 		
 		PercentageReturn percentages = calculatePercentages();
 		DecimalFormat displayFormat = new DecimalFormat("0.0");
@@ -105,6 +105,7 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 			nonfoliarCoverET.setText(displayFormat.format(percentages.nonfoliarCoverPercentage) + "%");
 		}
 		**/
+
 		boolean bareShown = false;
 		for (StickSegment.Cover cover : StickSegment.Cover.values()) {
 			if (percentages.coverPercentages.get(cover) != null) {
@@ -201,9 +202,7 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 		
 		if (percentages.species1Density != null) {
 			Transect transect = RHMApplication.getInstance().getDatabaseAdapter().getTransect(((SiteSummaryActivity)getActivity()).siteID, Direction.NORTH);
-			if (transect.dominantWoodySpecies != null && !"".equals(transect.dominantWoodySpecies.toString())) {
-				woodySpeciesTV.setText(transect.dominantWoodySpecies);
-			}
+			species1TV.setText(transect.speciesOfInterest1 != null ? transect.speciesOfInterest1 : transect.dominantWoodySpecies);
 			if (percentages.species1Density == -1) {
 				species1DensityET.setText(getString(R.string.na));
 			} else {
@@ -214,9 +213,7 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 
 		if (percentages.species2Density != null) {
 			Transect transect = RHMApplication.getInstance().getDatabaseAdapter().getTransect(((SiteSummaryActivity)getActivity()).siteID, Direction.NORTH);
-			if (transect.dominantNonwoodySpecies != null && !"".equals(transect.dominantNonwoodySpecies.toString())) {
-				nonwoodySpeciesTV.setText(transect.dominantNonwoodySpecies);
-			}
+			species2TV.setText(transect.speciesOfInterest2 != null ? transect.speciesOfInterest2 : transect.dominantNonwoodySpecies);
 			if (percentages.species2Density == -1) {
 				species2DensityET.setText(getString(R.string.na));
 			} else {
@@ -274,16 +271,16 @@ public class SiteSummaryFragment extends Fragment implements IHelp {
 							++canopyGapCount;
 						}
 						
-						if (segment.woodySpeciesCount == null) {
+						if (segment.speciesOfInterest1Count == null) {
 							missingSpecies1 = true;
 						} else {
-							species1Count += segment.woodySpeciesCount;
+							species1Count += segment.speciesOfInterest1Count;
 						}
 
-						if (segment.nonwoodySpeciesCount == null) {
+						if (segment.speciesOfInterest2Count == null) {
 							missingSpecies2 = true;
 						} else {
-							species2Count += segment.nonwoodySpeciesCount;
+							species2Count += segment.speciesOfInterest1Count;
 						}
 
 						if (segment.canopyHeight == null) {
